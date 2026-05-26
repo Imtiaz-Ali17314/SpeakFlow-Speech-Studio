@@ -3,20 +3,268 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Text to Speech Converter</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    />
+    <title>SpeakFlow // Professional Text-to-Speech Reader & Teleprompter Workspace</title>
+    <meta name="description" content="An advanced document reader, teleprompter, and pronunciation trainer featuring word-by-word visual tracking, voice speed adjustment, and mic comparisons." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="hero">
-      <h1>Text to Speech <span>Converter</span></h1>
-      <textarea placeholder="Write something here....."></textarea>
-      <div class="row">
-        <select></select>
-        <button><i class="fa-solid fa-play"></i>Listen</button>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 17H9V15H11V17ZM11 13H9V7H11V13ZM15 17H13V15H15V17ZM15 13H13V7H15V13Z" fill="url(#logo-grad)" />
+              <defs>
+                <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#06b6d4" />
+                  <stop offset="100%" stop-color="#3b82f6" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h1>SpeakFlow</h1>
+          <span class="version-tag">v2.0</span>
+        </div>
+        <p class="subtitle">Document Reader, Teleprompter & Pronunciation Studio</p>
+      </header>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        
+        <!-- Left Sidebar: Documents & Metrics -->
+        <aside class="sidebar-pane left-sidebar">
+          <div class="card-title-row">
+            <h4>Document Manager</h4>
+          </div>
+
+          <!-- Actions -->
+          <div class="doc-actions">
+            <button id="import-btn" class="sidebar-action-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span>Import TXT</span>
+            </button>
+            <input type="file" id="file-input" accept=".txt" style="display: none;" />
+
+            <button id="save-snippet-btn" class="sidebar-action-btn secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              <span>Save Snippet</span>
+            </button>
+          </div>
+
+          <!-- Document Metrics Card -->
+          <div class="metrics-card">
+            <h5>Document Telemetry</h5>
+            <div class="metrics-grid">
+              <div class="metric-item">
+                <span class="metric-label">Words</span>
+                <span id="metric-words" class="metric-value">0</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Characters</span>
+                <span id="metric-chars" class="metric-value">0</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Speaking Est.</span>
+                <span id="metric-time" class="metric-value">0:00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saved Documents List -->
+          <div class="snippets-container">
+            <h5>My Saved Workspace</h5>
+            <div id="snippets-list" class="snippets-list">
+              <!-- Dynamically populated via JS -->
+              <p class="empty-list-txt">No saved workspace files yet.</p>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center Workspace: Interactive Editor & Highlight Reader -->
+        <main class="center-workspace">
+          <!-- View Tabs Header -->
+          <div class="workspace-tabs-header">
+            <div class="tabs-nav">
+              <button class="view-tab-btn active" data-view="edit">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path>
+                </svg>
+                <span>Edit text</span>
+              </button>
+              <button class="view-tab-btn" data-view="read">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                </svg>
+                <span>Teleprompter mode</span>
+              </button>
+            </div>
+            
+            <div class="teleprompter-controls" id="teleprompter-actions" style="visibility: hidden;">
+              <button id="btn-font-decrease" class="action-icon-btn" title="Decrease Font">A-</button>
+              <button id="btn-font-increase" class="action-icon-btn" title="Increase Font">A+</button>
+              <button id="btn-theme-cycle" class="action-icon-btn" title="Cycle Contrast Theme">Theme</button>
+            </div>
+          </div>
+
+          <!-- Text Views Containers -->
+          <div class="views-wrapper">
+            <!-- Edit Mode View -->
+            <div id="view-editor" class="view-pane active">
+              <textarea id="main-textarea" placeholder="Paste your article, video script, or documents here... Or select 'Practice Sentence' on the right to start language pronunciation training."></textarea>
+            </div>
+
+            <!-- Teleprompter Read Mode View -->
+            <div id="view-reader" class="view-pane">
+              <div id="reader-viewport" class="reader-viewport theme-dark">
+                <!-- Spoken text will render word-by-word here -->
+                <div id="reader-content" class="reader-content">
+                  Your text will render in structured teleprompter format once you switch tab or press Play.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audio Canvas Waveform visualizer -->
+          <div class="visualizer-container">
+            <div class="visualizer-header">
+              <span id="visualizer-status">Waveform Monitor // Offline</span>
+              <div class="pulsing-record-dot" id="visualizer-mic-dot"></div>
+            </div>
+            <canvas id="waveform-canvas"></canvas>
+          </div>
+        </main>
+
+        <!-- Right Sidebar: Controls & Pronunciation Studio -->
+        <aside class="sidebar-pane right-sidebar">
+          
+          <!-- Speech Synthesis Controls -->
+          <div class="control-section">
+            <h4>Speech Engine Settings</h4>
+            
+            <div class="form-group">
+              <label for="voice-selector">Voice Profile</label>
+              <select id="voice-selector">
+                <option value="">Loading system voice profiles...</option>
+              </select>
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-labels">
+                <label>Speech Speed (Rate)</label>
+                <span id="label-speed">1.0x</span>
+              </div>
+              <input type="range" id="speech-speed" min="0.5" max="3" step="0.1" value="1.0" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-labels">
+                <label>Pitch Frequency</label>
+                <span id="label-pitch">1.0</span>
+              </div>
+              <input type="range" id="speech-pitch" min="0.5" max="2" step="0.1" value="1.0" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-labels">
+                <label>Audio Volume</label>
+                <span id="label-volume">100%</span>
+              </div>
+              <input type="range" id="speech-volume" min="0" max="1" step="0.1" value="1.0" />
+            </div>
+
+            <!-- Main Playback buttons -->
+            <div class="playback-controls">
+              <button id="play-btn" class="playback-btn primary-playback">
+                <svg class="play-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <svg class="pause-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="display: none;">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+                <span id="play-btn-text">Speak</span>
+              </button>
+              
+              <button id="stop-btn" class="playback-btn secondary-playback" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <rect x="4" y="4" width="16" height="16"></rect>
+                </svg>
+                <span>Stop</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pronunciation Studio -->
+          <div class="control-section border-top">
+            <div class="studio-header">
+              <h4>Pronunciation Studio</h4>
+              <span class="badge-accent">Listen & Repeat</span>
+            </div>
+            <p class="section-desc">Listen to a sentence, record your attempt, and play back side-by-side to improve accent and intonation.</p>
+
+            <div class="pronunciation-workflow">
+              <button id="btn-practice-trigger" class="workflow-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span>Practice Current Line</span>
+              </button>
+
+              <!-- Step Guide text -->
+              <div class="practice-step-guide" id="practice-status">
+                Select a sentence or paste text, then click "Practice" to begin pronunciation comparison.
+              </div>
+
+              <!-- Comparative Players -->
+              <div class="comparison-card" id="comparison-card" style="display: none;">
+                <h5>Dual Review Workbench</h5>
+                
+                <div class="comparison-rows">
+                  <div class="comparison-row">
+                    <span>AI Tutor Voice</span>
+                    <button id="btn-play-original" class="review-btn">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      <span>Listen</span>
+                    </button>
+                  </div>
+                  
+                  <div class="comparison-row">
+                    <span>My Recorded Speech</span>
+                    <button id="btn-play-recorded" class="review-btn disabled" disabled>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      <span>Review Me</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="feedback-stars" id="practice-stars">
+                  <!-- visual star rating calculated on match length -->
+                  <span>Accent Review Mode</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </aside>
+
       </div>
     </div>
 
